@@ -28,10 +28,19 @@ class FormTagBinder {
   }
 
   public function input($type, $name, $props=[]){
-    $val = htmlspecialchars($this->el($name, ""));
+    $val = $this->el($name, "");
     $props_string = $this->propsString($props);
 
-    return "<input type=\"{$type}\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$val}\"{$props_string}>";
+    if(!\is_array($val)){
+      $val = htmlspecialchars($val);
+      return "<input type=\"{$type}\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$val}\"{$props_string}>";
+
+    }else{
+      return implode("", array_map(function($val)use($type, $name, $props_string){
+        $val = htmlspecialchars($val);
+        return "<input type=\"{$type}\" name=\"{$name}[]\" value=\"{$val}\"{$props_string}>";
+      }, $val));
+    }
   }
 
   public function text($name, $props=[]){
@@ -99,6 +108,11 @@ class FormTagBinder {
     $props_string = $this->propsString($props);
 
     return "<textarea id=\"input-{$name}\" name=\"{$name}\"{$props_string}>{$val}</textarea>";
+  }
+
+  public function checkbox($value, $name, $props=[]) {
+    $checked = $this->el($name, "") === $value ? " checked" : "";
+    return "<input type=\"checkbox\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$value}\"{$checked}>";
   }
 
   public function select($dataset, $name, $props=[]){
