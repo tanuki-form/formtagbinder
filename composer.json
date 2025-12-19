@@ -1,10 +1,10 @@
 {
-  "name": "green-spot/formtagbinder",
+  "name": "tanuki-form/formtagbinder",
   "description": "",
   "keywords": [],
   "type": "library",
   "license": "MIT",
-  "homepage": "https://github.com/green-spot/formtagbinder",
+  "homepage": "https://github.com/tanuki-form/formtagbinder",
   "authors": [
     {
       "name": "green spot",

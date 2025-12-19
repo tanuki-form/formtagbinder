@@ -1,11 +1,11 @@
 ```shellscript
-$ composer require green-spot/formtagbinder
+$ composer require tanuki/formtagbinder
 ```
 
 ---
 
 ```php
-$binder = new GreenSpot\Utils\FormTagBinder();
+$binder = new Tanuki\Utils\FormTagBinder();
 
 echo $binder->text("name");
 // <input type="text" name="name" value="">
@@ -28,14 +28,14 @@ echo $binder->textarea("content");
 Bind post data
 ```php
 $postdata = [
-  "name" => "yamashita",
+  "name" => "green spot",
   "email" => "in.green.spot@gmail.com",
   "categories" => ["b", "c"]
 ];
-$binder = new GreenSpot\Utils\FormTagBinder($postdata);
+$binder = new Tanuki\Utils\FormTagBinder($postdata);
 
 echo $binder->text("name");
-// <input type="text" name="name" value="yamashita">
+// <input type="text" name="name" value="green spot">
 
 echo $binder->email("email", ["required", "placeholder" => "info@example.com"]);
 // <input type="email" name="email" value="in.green.spot@gmail.com" required placeholder="info@example.com">

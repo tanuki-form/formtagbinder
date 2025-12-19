@@ -1,6 +1,6 @@
 <?php
 
-namespace GreenSpot\Utils;
+namespace Tanuki\Utils;
 
 class FormTagBinder {
   private $data;
@@ -9,18 +9,8 @@ class FormTagBinder {
     $this->data = $data;
   }
 
-  protected function el($key, $default=null){
-    if(is_array($this->data)){
-      return isset($this->data[$key]) ? $this->data[$key] : $default;
-    }else if(is_object($this->data)){
-      return isset($this->data->$key) ? $this->data->$key : $default;
-    }
-
-    return $default;
-  }
-
   public function has($key){
-    return !!$this->el($key);
+    return (bool)($this->data[$key] ?? false);
   }
 
   public function keys(){
@@ -28,17 +18,17 @@ class FormTagBinder {
   }
 
   public function input($type, $name, $props=[]){
-    $val = $this->el($name, "");
-    $props_string = $this->propsString($props);
+    $val = $this->data[$name] ?? "";
+    $propsString = $this->propsString($props);
 
     if(!\is_array($val)){
       $val = htmlspecialchars($val);
-      return "<input type=\"{$type}\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$val}\"{$props_string}>";
+      return "<input type=\"{$type}\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$val}\"{$propsString}>";
 
     }else{
-      return implode("", array_map(function($val)use($type, $name, $props_string){
+      return implode("", array_map(function($val)use($type, $name, $propsString){
         $val = htmlspecialchars($val);
-        return "<input type=\"{$type}\" name=\"{$name}[]\" value=\"{$val}\"{$props_string}>";
+        return "<input type=\"{$type}\" name=\"{$name}[]\" value=\"{$val}\"{$propsString}>";
       }, $val));
     }
   }
@@ -104,20 +94,20 @@ class FormTagBinder {
   }
 
   public function textarea($name, $props=[]){
-    $val = htmlspecialchars($this->el($name, ""));
-    $props_string = $this->propsString($props);
+    $val = htmlspecialchars($this->data[$name] ?? "");
+    $propsString = $this->propsString($props);
 
-    return "<textarea id=\"input-{$name}\" name=\"{$name}\"{$props_string}>{$val}</textarea>";
+    return "<textarea id=\"input-{$name}\" name=\"{$name}\"{$propsString}>{$val}</textarea>";
   }
 
   public function checkbox($value, $name, $props=[]) {
-    $checked = $this->el($name, "") === $value ? " checked" : "";
+    $checked = ($this->data[$name] ?? "") === $value ? " checked" : "";
     return "<input type=\"checkbox\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$value}\"{$checked}>";
   }
 
   public function select($dataset, $name, $props=[]){
-    $val = $this->el($name, "");
-    $props_string = $this->propsString($props);
+    $val = $this->data[$name] ?? "";
+    $propsString = $this->propsString($props);
 
     $options = implode("", array_map(function($label, $v)use($val){
       if(is_int($label)) $label = $v;
@@ -125,13 +115,13 @@ class FormTagBinder {
       return "<option value=\"{$v}\"{$selected}>{$label}</option>";
     }, array_keys($dataset), array_values($dataset)));
 
-    return "<select id=\"input-{$name}\" name=\"{$name}\"{$props_string}>{$options}</select>";
+    return "<select id=\"input-{$name}\" name=\"{$name}\"{$propsString}>{$options}</select>";
   }
 
   public function radios($dataset, $name){
-    $first_option_key = array_keys($dataset)[0];
-    if (is_int($first_option_key)) $first_option_key = array_values($dataset)[0];
-    $val = $this->el($name, $first_option_key);
+    $firstOptionKey = array_keys($dataset)[0];
+    if (is_int($firstOptionKey)) $firstOptionKey = array_values($dataset)[0];
+    $val = $this->data[$name] ?? $firstOptionKey;
 
     $ret = [];
 
@@ -149,7 +139,7 @@ class FormTagBinder {
   }
 
   public function checkboxes($dataset, $name){
-    $vals = $this->el($name, []);
+    $vals = $this->data[$name] ?? [];
 
     $ret = [];
     $i = 1;
