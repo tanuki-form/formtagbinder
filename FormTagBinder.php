@@ -102,7 +102,8 @@ class FormTagBinder {
 
   public function checkbox($value, $name, $props=[]) {
     $checked = ($this->data[$name] ?? "") === $value ? " checked" : "";
-    return "<input type=\"checkbox\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$value}\"{$checked}>";
+    $propsString = $this->propsString($props);
+    return "<input type=\"checkbox\" id=\"input-{$name}\" name=\"{$name}\" value=\"{$value}\"{$propsString}{$checked}>";
   }
 
   public function select($dataset, $name, $props=[]){
