@@ -1,6 +1,6 @@
 <?php
 
-namespace Tanuki\Utils;
+namespace Form;
 
 class FormTagBinder {
   private $data;
@@ -119,10 +119,11 @@ class FormTagBinder {
     return "<select id=\"input-{$name}\" name=\"{$name}\"{$propsString}>{$options}</select>";
   }
 
-  public function radios($dataset, $name){
+  public function radios($dataset, $name, $props=[]){
     $firstOptionKey = array_keys($dataset)[0];
     if (is_int($firstOptionKey)) $firstOptionKey = array_values($dataset)[0];
     $val = $this->data[$name] ?? $firstOptionKey;
+    $propsString = $this->propsString($props);
 
     $ret = [];
 
@@ -132,15 +133,16 @@ class FormTagBinder {
       if(is_int($label)) $label = $v;
       $checked = $v === $val ? " checked" : "";
 
-      $ret[$label] = "<input type=\"radio\" id=\"input-{$name}-{$i}\" name=\"{$name}\" value=\"{$v}\"{$checked}>";
+      $ret[$label] = "<input type=\"radio\" id=\"input-{$name}-{$i}\" name=\"{$name}\" value=\"{$v}\"{$propsString} {$checked}>";
       $i++;
     }
 
     return $ret;
   }
 
-  public function checkboxes($dataset, $name){
+  public function checkboxes($dataset, $name, $props=[]){
     $vals = $this->data[$name] ?? [];
+    $propsString = $this->propsString($props);
 
     $ret = [];
     $i = 1;
@@ -149,7 +151,7 @@ class FormTagBinder {
       if(is_int($label)) $label = $v;
       $checked = in_array($v, $vals) ? " checked" : "";
 
-      $ret[$label] = "<input type=\"checkbox\" id=\"input-{$name}-{$i}\" name=\"{$name}[]\" value=\"{$v}\"{$checked}>";
+      $ret[$label] = "<input type=\"checkbox\" id=\"input-{$name}-{$i}\" name=\"{$name}[]\" value=\"{$v}\"{$propsString} {$checked}>";
       $i++;
     }
 
