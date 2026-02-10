@@ -1,6 +1,6 @@
 <?php
 
-namespace Form;
+namespace Tanuki\Utils;
 
 class FormTagBinder {
   private $data;
